@@ -1,5 +1,6 @@
 import React from 'react';
 import { Todo } from '../../types/Todo';
+import classNames from 'classnames';
 
 type Props = {
   todos: Todo[];
@@ -28,10 +29,21 @@ export const TodoList: React.FC<Props> = ({
     <tbody>
       {todos.map((todo, index: number) => {
         const isCompleted = todo.completed;
-        const rowClass = isCompleted ? 'has-background-info-light' : '';
         const isSelected = selectedTodo?.id === todo.id;
-        const iconClass = isSelected ? 'fa-eye-slash' : 'fa-eye';
-        const colorTitle = isCompleted ? 'has-text-success' : 'has-text-danger';
+
+        const rowClass = classNames({
+          'has-background-info-light': isCompleted,
+        });
+
+        const iconClass = classNames('far', {
+          'fa-eye-slash': isSelected,
+          'fa-eye': !isSelected,
+        });
+
+        const colorTitle = classNames({
+          'has-text-success': isCompleted,
+          'has-text-danger': !isCompleted,
+        });
 
         return (
           <tr data-cy="todo" className={rowClass} key={todo.id}>
@@ -56,7 +68,7 @@ export const TodoList: React.FC<Props> = ({
                 }}
               >
                 <span className="icon">
-                  <i className={`far ${iconClass}`} />
+                  <i className={iconClass} />
                 </span>
               </button>
             </td>

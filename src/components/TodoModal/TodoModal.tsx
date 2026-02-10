@@ -3,6 +3,7 @@ import { Loader } from '../Loader';
 import { Todo } from '../../types/Todo';
 import { User } from '../../types/User';
 import { getUser } from '../../api';
+import classNames from 'classnames';
 
 type Props = {
   todo: Todo;
@@ -11,24 +12,23 @@ type Props = {
 
 export const TodoModal: React.FC<Props> = ({ todo, onClose }) => {
   const isDone: boolean = todo.completed;
-  const classComplete = isDone ? 'has-text-success' : 'has-text-danger';
   const [user, setUser] = useState<User | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const classComplete = classNames({
+    'has-text-success': isDone,
+    'has-text-danger': !isDone,
+  });
 
   useEffect(() => {
     setIsLoading(true);
 
     getUser(todo.userId)
       .then(userData => {
-        setTimeout(() => {
-          setUser(userData);
-          setIsLoading(false);
-        }, 100);
+        setUser(userData);
       })
-      .catch(err => {
-        // eslint-disable-next-line no-console
-        console.error(err);
+      .finally(() => {
         setIsLoading(false);
       });
   }, [todo.userId]);

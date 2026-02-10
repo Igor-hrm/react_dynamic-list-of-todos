@@ -39,12 +39,25 @@ export const App: React.FC = () => {
     );
 
   useEffect(() => {
-    setIsLoading(true); // começa carregando
+    let isMounted = true;
 
-    getTodos().then(dados => {
-      setTodos(dados);
-      setIsLoading(false); // quando carrega os dados passa false
-    });
+    setIsLoading(true);
+
+    getTodos()
+      .then(dados => {
+        if (isMounted) {
+          setTodos(dados);
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

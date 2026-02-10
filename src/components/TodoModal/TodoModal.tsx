@@ -22,15 +22,29 @@ export const TodoModal: React.FC<Props> = ({ todo, onClose }) => {
   });
 
   useEffect(() => {
+    let isMounted = true;
+
     setIsLoading(true);
 
     getUser(todo.userId)
       .then(userData => {
-        setUser(userData);
+        if (isMounted) {
+          setUser(userData);
+        }
+      })
+      .catch(err => {
+        // eslint-disable-next-line no-console
+        console.error('Failed to load user', err);
       })
       .finally(() => {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [todo.userId]);
 
   return (

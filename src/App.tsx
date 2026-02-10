@@ -49,6 +49,10 @@ export const App: React.FC = () => {
           setTodos(dados);
         }
       })
+      .catch(err => {
+        // eslint-disable-next-line no-console
+        console.error('Failed to load todos', err);
+      })
       .finally(() => {
         if (isMounted) {
           setIsLoading(false);
